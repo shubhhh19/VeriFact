@@ -70,11 +70,10 @@ from fastapi import APIRouter
 api_router = APIRouter(prefix="/api/v1", tags=["v1"])
 
 # Include routers
-# TODO: Add your API routers here
-# from .routers import news, validation, analysis
-# api_router.include_router(news.router, prefix="/news", tags=["news"])
-# api_router.include_router(validation.router, prefix="/validate", tags=["validation"])
-# api_router.include_router(analysis.router, prefix="/analyze", tags=["analysis"])
+from .routers import news, validation, analysis
+api_router.include_router(news.router, prefix="/news", tags=["news"])
+api_router.include_router(validation.router, prefix="/validate", tags=["validation"])
+api_router.include_router(analysis.router, prefix="/analyze", tags=["analysis"])
 
 # Include the API router
 app.include_router(api_router)
