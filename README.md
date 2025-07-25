@@ -20,10 +20,11 @@ An AI-powered news validation system that helps verify the credibility of news a
 - **Caching**: Redis
 - **Containerization**: Docker
 
-### Frontend (Coming Soon)
-- **Framework**: React + Vite
+### Frontend
+- **Framework**: React + Vite + TypeScript
 - **Styling**: Tailwind CSS
 - **Deployment**: Vercel
+- **Features**: News validation interface, real-time results display
 
 ## Getting Started
 
@@ -55,6 +56,25 @@ An AI-powered news validation system that helps verify the credibility of news a
 
 4. Access the API documentation at `http://localhost:8000/docs`
 
+### Frontend Development
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser to `http://localhost:3000`
+
 ## Project Structure
 
 ```
@@ -71,7 +91,7 @@ An AI-powered news validation system that helps verify the credibility of news a
 │   ├── tests/             # Test files
 │   ├── requirements.txt   # Python dependencies
 │   └── Dockerfile         # Docker configuration
-├── frontend/              # Frontend React application (coming soon)
+├── frontend/              # Frontend React application with TypeScript
 ├── docs/                  # Documentation
 ├── docker-compose.yml     # Docker Compose configuration
 └── README.md              # This file
