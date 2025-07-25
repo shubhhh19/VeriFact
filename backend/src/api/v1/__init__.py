@@ -13,8 +13,9 @@ router = APIRouter(prefix="/api/v1", tags=["v1"])
 
 # Import and include all route modules
 from . import health
-from .routers import articles
+from .routers import articles, validations
 
 # Include routers
 router.include_router(health.router)
 router.include_router(articles.router, prefix="/articles")
+router.include_router(validations.router, prefix="/validations")

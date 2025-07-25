@@ -6,7 +6,7 @@ This module contains Pydantic models for validation-related requests and respons
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from uuid import UUID
 
 from pydantic import BaseModel, Field, HttpUrl
@@ -27,6 +27,27 @@ class ValidationType(str, Enum):
     CONTRADICTION_CHECK = "contradiction_check"
     CREDIBILITY_SCORE = "credibility_score"
     COMPREHENSIVE = "comprehensive"
+    BIAS_ANALYSIS = "bias_analysis"
+    FULL_ANALYSIS = "full_analysis"
+
+
+class EvidenceSource(BaseModel):
+    """Model for evidence source"""
+    url: Optional[HttpUrl] = None
+    title: Optional[str] = None
+    publisher: Optional[str] = None
+    published_date: Optional[datetime] = None
+    reliability_score: Optional[float] = Field(None, ge=0, le=1)
+
+
+class ClaimAnalysis(BaseModel):
+    """Model for claim analysis"""
+    claim: str
+    is_supported: Optional[bool] = None
+    confidence: float = Field(..., ge=0, le=1)
+    explanation: str
+    supporting_evidence: List[EvidenceSource] = []
+    contradicting_evidence: List[EvidenceSource] = []
 
 
 class ValidationRequest(BaseModel):
@@ -47,6 +68,7 @@ class Claim(BaseModel):
     text: str = Field(..., description="The claim text")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score")
     category: Optional[str] = Field(None, description="Category of the claim")
+    type: Optional[str] = Field(None, description="Type of claim")
 
 
 class Source(BaseModel):
@@ -55,6 +77,9 @@ class Source(BaseModel):
     url: Optional[HttpUrl] = Field(None, description="Source URL")
     reliability_score: float = Field(..., ge=0.0, le=1.0, description="Reliability score")
     supports_claim: Optional[bool] = Field(None, description="Whether source supports the claim")
+    title: Optional[str] = Field(None, description="Source article title")
+    published_at: Optional[str] = Field(None, description="Publication date")
+    relevance_score: Optional[float] = Field(None, description="Relevance to the claim")
 
 
 class Contradiction(BaseModel):
@@ -87,7 +112,7 @@ class ValidationResult(BaseModel):
     
     # Additional details
     details: Dict[str, Any] = Field(default_factory=dict, description="Additional validation details")
-    
+
     class Config:
         from_attributes = True
 
@@ -99,4 +124,13 @@ class ValidationResponse(BaseModel):
     status: Optional[ValidationStatus] = Field(None, description="Current status of validation")
     results: Optional[ValidationResult] = Field(None, description="Validation results")
     message: Optional[str] = Field(None, description="Response message")
-    error: Optional[str] = Field(None, description="Error message if operation failed") 
+    error: Optional[str] = Field(None, description="Error message if operation failed")
+
+
+class ValidationResultList(BaseModel):
+    """Schema for listing validation results"""
+    items: List[ValidationResult]
+    total: int
+    page: int
+    size: int
+    pages: int
