@@ -15,8 +15,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Application metadata
-API_TITLE = "News Validator Agent API"
-API_DESCRIPTION = "API for validating news articles using AI"
+API_TITLE = "VeriFact API"
+API_DESCRIPTION = "API for VeriFact - AI-powered news validation system"
 API_VERSION = "0.1.0"
 
 # Create application

@@ -1,7 +1,8 @@
 """
-News Validator Agent - Backend Package
+VeriFact - AI-powered News Validation System
 
-This package contains the core functionality for the News Validator Agent API.
+This package provides the core functionality for the VeriFact backend,
+including API endpoints, validation logic, and database models.
 """
 
 __version__ = "0.1.0"

@@ -1,60 +1,84 @@
 """
-News Validator Agent - Configuration Module
-Handles application configuration and environment variables
+VeriFact - Configuration Module
+
+This module handles configuration settings using environment variables with pydantic-settings.
 """
 
 import os
-from pydantic_settings import BaseSettings
-from typing import Optional, List
+from datetime import datetime, timezone
+from typing import List, Optional
+
+from pydantic import AnyHttpUrl, Field, PostgresDsn, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Application settings"""
     
     # Application
-    APP_NAME: str = "News Validator Agent"
-    DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here")
-    ALLOWED_ORIGINS: List[str] = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+    PROJECT_NAME: str = "VeriFact"
+    DEBUG: bool = Field(default=False, env="DEBUG")
+    SECRET_KEY: str = Field(
+        default="your-secret-key-here",
+        env="SECRET_KEY",
+        min_length=32,
+        max_length=100,
+    )
     
     # API
     API_V1_STR: str = "/api/v1"
-    
-    # Database
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "news_validator")
-    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "db")
-    POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", 5432))
-    DATABASE_URL: str = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-    
-    # Redis
-    REDIS_HOST: str = os.getenv("REDIS_HOST", "redis")
-    REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
-    REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-    
-    # Google Gemini API
-    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY")
-    
-    # NewsAPI
-    NEWS_API_KEY: Optional[str] = os.getenv("NEWS_API_KEY")
-    
-    # CORS
-    BACKEND_CORS_ORIGINS: List[str] = os.getenv(
-        "BACKEND_CORS_ORIGINS", 
-        "http://localhost,http://localhost:3000,http://localhost:8000"
-    ).split(",")
-    
-    # Security
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
     
-    # Rate limiting
-    RATE_LIMIT_PER_MINUTE: int = 60  # requests per minute
+    # CORS
+    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8000"]
     
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    # Database
+    POSTGRES_SERVER: str = Field(default="localhost", env="POSTGRES_SERVER")
+    POSTGRES_USER: str = Field(default="postgres", env="POSTGRES_USER")
+    POSTGRES_PASSWORD: str = Field(default="postgres", env="POSTGRES_PASSWORD")
+    POSTGRES_DB: str = Field(default="verifact", env="POSTGRES_DB")
+    DATABASE_URL: Optional[PostgresDsn] = None
+    
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_db_connection(cls, v: Optional[str], values) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
+            username=values.data.get("POSTGRES_USER"),
+            password=values.data.get("POSTGRES_PASSWORD"),
+            host=values.data.get("POSTGRES_SERVER"),
+            path=f"{values.data.get('POSTGRES_DB') or ''}",
+        )
+    
+    # Redis
+    REDIS_HOST: str = Field(default="localhost", env="REDIS_HOST")
+    REDIS_PORT: int = Field(default=6379, env="REDIS_PORT")
+    REDIS_DB: int = Field(default=0, env="REDIS_DB")
+    REDIS_URL: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
+    
+    # Google Gemini API
+    GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
+    
+    # NewsAPI
+    NEWS_API_KEY: str = Field(..., env="NEWS_API_KEY")
+    
+    # Rate Limiting
+    RATE_LIMIT: int = Field(default=100, env="RATE_LIMIT")
+    RATE_LIMIT_WINDOW: int = Field(default=3600, env="RATE_LIMIT_WINDOW")  # 1 hour
+    
+    # Model Config
+    model_config = SettingsConfigDict(
+        case_sensitive=True,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+    
+    def get_current_datetime(self) -> datetime:
+        """Get current datetime in UTC"""
+        return datetime.now(timezone.utc)
 
 
 # Create settings instance

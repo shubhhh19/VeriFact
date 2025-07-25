@@ -1,4 +1,4 @@
-# News Validator Agent
+# VeriFact
 
 An AI-powered news validation system that helps verify the credibility of news articles by analyzing claims, checking sources, and detecting contradictions across multiple news sources.
 
