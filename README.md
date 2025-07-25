@@ -1,50 +1,163 @@
-# Agentic AI App Hackathon Template
+# News Validator Agent
 
-Welcome! This repository is your starting point for the **Agentic AI App Hackathon**. It includes:
+An AI-powered news validation system that helps verify the credibility of news articles by analyzing claims, checking sources, and detecting contradictions across multiple news sources.
 
-- A consistent folder structure  
-- An environment spec (`environment.yml` or `Dockerfile`)  
-- Documentation placeholders to explain your design and demo
+## Features
 
-## 📋 Submission Checklist
+- **Claim Extraction**: Automatically identify key claims in news articles
+- **Source Verification**: Cross-reference information with multiple news sources
+- **Contradiction Detection**: Identify conflicting information across sources
+- **Credibility Scoring**: Generate confidence scores for news articles
+- **API Integration**: Built with FastAPI for easy integration
 
-- [ ] All code in `src/` runs without errors  
-- [ ] `ARCHITECTURE.md` contains a clear diagram sketch and explanation  
-- [ ] `EXPLANATION.md` covers planning, tool use, memory, and limitations  
-- [ ] `DEMO.md` links to a 3–5 min video with timestamped highlights  
+## Tech Stack
 
+### Backend
+- **Framework**: FastAPI (Python)
+- **AI/ML**: Google Gemini API
+- **News API**: NewsAPI/Google News API
+- **Database**: PostgreSQL
+- **Caching**: Redis
+- **Containerization**: Docker
 
-## 🚀 Getting Started
+### Frontend (Coming Soon)
+- **Framework**: React + Vite
+- **Styling**: Tailwind CSS
+- **Deployment**: Vercel
 
-1. **Clone / Fork** this template.  Very Important. Fork Name MUST be the same name as the teamn name
-2. **Install dependencies**  
+## Getting Started
+
+### Prerequisites
+
+- Python 3.11+
+- Docker and Docker Compose
+- Google Gemini API Key
+- NewsAPI Key
+
+### Installation
+
+1. Clone the repository:
    ```bash
-   # Conda
-   conda env create -f environment.yml
-   conda activate agentic-hackathon
+   git clone https://github.com/yourusername/news-validator-agent.git
+   cd news-validator-agent
+   ```
 
-   #—or Docker—
-   docker build -t agentic-agent .
-   docker run --rm -it agentic-agent bash
+2. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys and configuration
+   ```
 
-## 📂 Folder Layout
+3. Build and start the services:
+   ```bash
+   docker-compose up --build
+   ```
 
-![Folder Layout Diagram](images/folder-githb.png)
+4. Access the API documentation at `http://localhost:8000/docs`
 
+## Project Structure
 
+```
+.
+├── backend/               # Backend FastAPI application
+│   ├── src/               # Source code
+│   │   ├── __init__.py
+│   │   ├── main.py        # FastAPI application entry point
+│   │   ├── config.py      # Configuration settings
+│   │   ├── models/        # Database models
+│   │   ├── routes/        # API routes
+│   │   ├── services/      # Business logic
+│   │   └── utils/         # Utility functions
+│   ├── tests/             # Test files
+│   ├── requirements.txt   # Python dependencies
+│   └── Dockerfile         # Docker configuration
+├── frontend/              # Frontend React application (coming soon)
+├── docs/                  # Documentation
+├── docker-compose.yml     # Docker Compose configuration
+└── README.md              # This file
+```
 
-## 🏅 Judging Criteria
+## Environment Variables
 
-- **Technical Excellence **  
-  This criterion evaluates the robustness, functionality, and overall quality of the technical implementation. Judges will assess the code's efficiency, the absence of critical bugs, and the successful execution of the project's core features.
+Create a `.env` file in the root directory with the following variables:
 
-- **Solution Architecture & Documentation **  
-  This focuses on the clarity, maintainability, and thoughtful design of the project's architecture. This includes assessing the organization and readability of the codebase, as well as the comprehensiveness and conciseness of documentation (e.g., GitHub README, inline comments) that enables others to understand and potentially reproduce or extend the solution.
+```env
+# Backend
+DEBUG=True
+SECRET_KEY=your-secret-key
+ALLOWED_ORIGINS=*
 
-- **Innovative Gemini Integration **  
-  This criterion specifically assesses how effectively and creatively the Google Gemini API has been incorporated into the solution. Judges will look for novel applications, efficient use of Gemini's capabilities, and the impact it has on the project's functionality or user experience. You are welcome to use additional Google products.
+# Database
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=news_validator
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
 
-- **Societal Impact & Novelty **  
-  This evaluates the project's potential to address a meaningful problem, contribute positively to society, or offer a genuinely innovative and unique solution. Judges will consider the originality of the idea, its potential real‑world applicability, and its ability to solve a challenge in a new or impactful way.
+# Redis
+REDIS_HOST=redis
+REDIS_PORT=6379
 
+# Google Gemini API
+GEMINI_API_KEY=your-gemini-api-key
 
+# NewsAPI
+NEWS_API_KEY=your-newsapi-key
+```
+
+## API Documentation
+
+Once the application is running, you can access the interactive API documentation at:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## Development
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run tests with coverage
+pytest --cov=backend tests/
+```
+
+### Code Style
+
+This project uses:
+- **Black** for code formatting
+- **Flake8** for linting
+- **Mypy** for type checking
+
+Run the following commands before committing:
+
+```bash
+black .
+flake8
+mypy .
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Team
+
+- [Your Name] - Backend Developer
+- [Team Member 2] - Frontend Developer
+- [Team Member 3] - DevOps & Documentation
+
+## Acknowledgments
+
+- Google Gemini for the powerful AI capabilities
+- FastAPI for the excellent web framework
+- NewsAPI for providing news data
