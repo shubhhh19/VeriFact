@@ -70,10 +70,11 @@ from fastapi import APIRouter
 api_router = APIRouter(prefix="/api/v1", tags=["v1"])
 
 # Include routers
-from .routers import news, validation, analysis
-api_router.include_router(news.router, prefix="/news", tags=["news"])
-api_router.include_router(validation.router, prefix="/validate", tags=["validation"])
-api_router.include_router(analysis.router, prefix="/analyze", tags=["analysis"])
+from .api.v1.routers import articles
+from .api.v1.routers.validation import router as validation_router
+
+api_router.include_router(articles.router, prefix="/articles", tags=["articles"])
+api_router.include_router(validation_router, prefix="/validation", tags=["validation"])
 
 # Include the API router
 app.include_router(api_router)
